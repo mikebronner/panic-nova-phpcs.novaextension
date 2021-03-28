@@ -1,0 +1,42 @@
+{
+    "identifier": "genealabs.phpcs",
+    "name": "PHP CodeSniffer",
+    "organization": "GeneaLabs",
+    "description": "PHPCS linter for Panic's Nova editor.",
+    "version": "0.1",
+    "categories": ["issues"],
+    
+    "main": "main.js",
+    
+    "activationEvents": [
+        "onLanguage:php"
+    ],
+    
+    "entitlements": {
+        "filesystem": "readonly",
+        "process": true,
+        "requests": true
+    },
+
+    "config": [
+        {
+            "key": "genealabs.phpcs.standard",
+            "title": "Standard",
+            "description": "The coding standard PHPCS should use for linting [PSR1, PSR2, PSR12, PEAR, Zend, Squiz, MySource]. If specifying multiple standards, list them as comma-separated values. You can also specify a workspace-relative or absolute path to a phpcs.xml configuration file. If you do not provide a standard, PHPCS will look for 'phpcs.xml' at the workspace path. If neither is provided, PHPCS will fall back to 'PSR1,PSR2,PSR12'.",
+            "type": "string",
+            "placeholder": "phpcs.xml|PSR1,PSR2,PSR12",
+            "default": ""
+        }
+    ],
+    
+    "configWorkspace": [
+        {
+            "key": "genealabs.phpcs.standard",
+            "title": "Standard",
+            "description": "The coding standard PHPCS should use for linting [PSR1, PSR2, PSR12, PEAR, Zend, Squiz, MySource]. If specifying multiple standards, list them as comma-separated values. You can also specify a workspace-relative or absolute path to a phpcs.xml configuration file. If you do not provide a standard, PHPCS will look for 'phpcs.xml' at the workspace path. If neither is provided, PHPCS will fall back to 'PSR1,PSR2,PSR12'.",
+            "type": "string",
+            "placeholder": "phpcs.xml|PSR1,PSR2,PSR12",
+            "default": ""
+        }
+    ]
+}
