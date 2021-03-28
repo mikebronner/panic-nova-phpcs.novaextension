@@ -2,10 +2,21 @@ exports.activate = function() {
     // update phpcs binary using phive
     console.log("PHPCS: extension activated.");
 
+    var process3 = new Process("/usr/bin/env", {
+        args: ["chmod", "+x", "Bin/phive"],
+        shell: true
+    });
+    
+    process3.onStderr(function(line) {
+        console.error("PHPCS Error: " + line);
+    });
+    
+    process3.start();
+
     console.log("PHPCS update started.");
     
     var process = new Process("/usr/bin/env", {
-        args: ["Bin/phive", "install", "phpcs", "--target", "Bin", "--copy", "--trust-gpg-keys", "31C7E470E2138192"],
+        args: ["./Bin/phive", "install", "phpcs", "--target", "Bin", "--copy", "--trust-gpg-keys", "31C7E470E2138192"],
         shell: true
     });
     
@@ -30,18 +41,8 @@ exports.activate = function() {
     });
 
     var process2 = new Process("/usr/bin/env", {
-        args: ["chmod", "+x", "Bin/phive"],
+        args: ["chmod", "+x", "Bin/phpcs"],
         shell: true
-    });
-    
-    process2.onStdout(function(line) {
-        line = line.replace("\n", "");
-        
-        if (line.length == 0) {
-            return;
-        }
-        
-        console.log("PHPCS: " + line);
     });
     
     process2.onStderr(function(line) {
