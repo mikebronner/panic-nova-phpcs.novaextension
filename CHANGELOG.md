@@ -9,6 +9,15 @@
 - automatic updating of PHPCS may cause infinite looping of activation of the extension.
 - installation of the extension may not work if a PGP executable is not available on the system.
 
+## [0.1.2] - 2021-03-28
+### Added
+- process to set PHPCS binary chmod flags.
+
+## [0.1.1] - 2021-03-28
+### Added
+- PHPCS standard configuration functionality.
+- PHPCS binary update when extension is loaded.
+
 ## [0.1.0] - 2021-03-28
 ### Added
 - initial functionality.

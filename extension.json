@@ -3,7 +3,7 @@
     "name": "PHP CodeSniffer",
     "organization": "GeneaLabs",
     "description": "PHPCS linter for Panic's Nova editor.",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "categories": ["issues"],
     
     "main": "main.js",
