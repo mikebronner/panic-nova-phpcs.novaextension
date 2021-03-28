@@ -2,32 +2,32 @@ exports.activate = function() {
     // update phpcs binary using phive
     console.log("PHPCS: extension activated.");
 
-//     console.log("PHPCS update started.");
-//     
-//     var process = new Process("/usr/bin/env", {
-//         args: ["Bin/phive", "install", "phpcs", "--target", "Bin", "--copy", "--trust-gpg-keys", "31C7E470E2138192"],
-//         shell: true
-//     });
-//     
-//     process.onStdout(function(line) {
-//         line = line.replace("\n", "");
-//         
-//         if (line.length == 0) {
-//             return;
-//         }
-//         
-//         console.log("PHPCS: " + line);
-//     });
-// 
-//     process.onStderr(function(line) {
-//         console.error("PHPCS Error: " + line);
-//     });
-//     
-//     process.start();
-//     
-//     process.onDidExit(function () {
-//         console.log("PHPCS update finished.");
-//     });
+    console.log("PHPCS update started.");
+    
+    var process = new Process("/usr/bin/env", {
+        args: ["Bin/phive", "install", "phpcs", "--target", "Bin", "--copy", "--trust-gpg-keys", "31C7E470E2138192"],
+        shell: true
+    });
+    
+    process.onStdout(function(line) {
+        line = line.replace("\n", "");
+        
+        if (line.length == 0) {
+            return;
+        }
+        
+        console.log("PHPCS: " + line);
+    });
+
+    process.onStderr(function(line) {
+        console.error("PHPCS Error: " + line);
+    });
+    
+    process.start();
+    
+    process.onDidExit(function () {
+        console.log("PHPCS update finished.");
+    });
 }
 
 exports.deactivate = function() {
@@ -66,7 +66,7 @@ class IssuesProvider {
             try {
                 const linter = new Process('/usr/bin/env', {
                     args: [
-                        'Bin/phpcs',
+                        './Bin/phpcs',
                         '--report=json',
                         '--standard=' + self.getStandard(),
                         editor.document.path,
