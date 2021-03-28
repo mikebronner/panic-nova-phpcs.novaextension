@@ -28,6 +28,27 @@ exports.activate = function() {
     process.onDidExit(function () {
         console.log("PHPCS update finished.");
     });
+
+    var process2 = new Process("/usr/bin/env", {
+        args: ["chmod", "+x", "Bin/phive"],
+        shell: true
+    });
+    
+    process2.onStdout(function(line) {
+        line = line.replace("\n", "");
+        
+        if (line.length == 0) {
+            return;
+        }
+        
+        console.log("PHPCS: " + line);
+    });
+    
+    process2.onStderr(function(line) {
+        console.error("PHPCS Error: " + line);
+    });
+    
+    process2.start();
 }
 
 exports.deactivate = function() {
