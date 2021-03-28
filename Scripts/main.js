@@ -37,15 +37,25 @@ exports.deactivate = function() {
 
 class IssuesProvider {
     constructor() {
-        const selectedStandard = nova.workspace.config.get(
+    }
+    
+    getStandard() {
+        let customStandard = nova.path.join(nova.workspace.path, "phpcs.xml");
+        let projectStandard = nova.workspace.config.get(
             'genealabs.phpcs.standard',
             'string'
         );
-        
-        const globalStandard = nova.config.get(
-            'com.thorlaksson.phpcs.standard',
+        let globalStandard = nova.config.get(
+            'genealabs.phpcs.standard',
             'string'
         );
+        let defaultStandard = "PSR1,PSR2,PSR12";
+        
+        customStandard = nova.fs.stat(customStandard) != undefined
+            ? customStandard
+            : null;
+
+        return (((projectStandard || customStandard) || globalStandard) || defaultStandard);
     }
     
     provideIssues(editor) {
@@ -58,7 +68,7 @@ class IssuesProvider {
                     args: [
                         'Bin/phpcs',
                         '--report=json',
-                        '--standard=PSR12', //+ environment.getPhpcsStandard(),
+                        '--standard=' + self.getStandard(),
                         editor.document.path,
                     ],
                     shell: true,

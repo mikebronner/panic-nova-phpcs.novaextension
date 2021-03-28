@@ -9,15 +9,21 @@
     "main": "main.js",
     
     "activationEvents": [
-        "onLanguage:php"
+        "onLanguage:php",
+        "onWorkspaceContains:phpcs.xml"
     ],
+    
+    "bugs": "https://github.com/GeneaLabs/panic-nova-phpcs/issues",
+    "funding": "https://github.com/sponsors/GeneaLabs",
+    "license": "MIT",
+    "repository": "https://github.com/GeneaLabs/panic-nova-phpcs",
     
     "entitlements": {
         "filesystem": "readonly",
         "process": true,
         "requests": true
     },
-
+    
     "config": [
         {
             "key": "genealabs.phpcs.standard",
