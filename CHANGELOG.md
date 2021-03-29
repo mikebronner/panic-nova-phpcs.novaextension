@@ -1,6 +1,10 @@
 # Changelog
 ## [Upcoming]
 
+## [0.1.5] - 2021-03-28
+### Fixed
+- self-updating of Phive binary.
+
 ## [0.1.4] - 2021-03-28
 ### Added
 - process to update PHIVE binary.

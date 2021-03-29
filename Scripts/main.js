@@ -16,7 +16,7 @@ exports.activate = function() {
     process2.start();
 
     var process3 = new Process("/usr/bin/env", {
-        args: ["Bin/phive", "selfupdate"],
+        args: ["./Bin/phive", "selfupdate"],
         env: {
             "PATH": "$PATH:" + nova.path.join(nova.workspace.path, "Bin")
         },
