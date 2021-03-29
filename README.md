@@ -20,15 +20,12 @@ Let's get started!
 
 ![](https://nova.app/images/en/dark/editor.png)
 
-## Requirements
+<!-- ## Requirements -->
 
 <!--
 🎈 If your extension depends on external processes or tools that users will need to have, it's helpful to list those and provide links to their installers:
 -->
 
-PHP CodeSniffer for Nova requires some additional tools to be installed on your Mac:
-
-- [GnuPG for OSX](https://sourceforge.net/projects/gpgosx/) or any other PGP executable.
 
 <!--
 ✨ Providing tips, tricks, or other guides for installing or configuring external dependencies can go a long way toward helping your users have a good setup experience:
