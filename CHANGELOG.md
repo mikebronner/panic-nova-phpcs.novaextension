@@ -1,6 +1,10 @@
 # Changelog
 ## [Upcoming]
 
+## [Known Issues]
+- permission issues running phive when updating.
+- running too frequently may cause issues with the linter.
+
 ## [0.1.5] - 2021-03-28
 ### Fixed
 - self-updating of Phive binary.
