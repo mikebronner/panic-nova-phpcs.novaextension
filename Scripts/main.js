@@ -1,58 +1,11 @@
 exports.activate = function() {
     console.log("PHPCS: extension activated.");
-
-    var process1 = new Process("/usr/bin/env", {
-        args: ["chmod", "+x", "Bin/gpg2"],
-        shell: true
-    });
-    process1.onStderr(function(line) {console.error(line);});
-    process1.start();
-
     var process2 = new Process("/usr/bin/env", {
-        args: ["chmod", "+x", "Bin/phive"],
+        args: ["chmod", "+x", "Bin/phpcs"],
         shell: true
     });
     process2.onStderr(function(line) {console.error(line);});
     process2.start();
-
-    var process3 = new Process("/usr/bin/env", {
-        args: ["./Bin/phive", "selfupdate"],
-        env: {
-            "PATH": "$PATH:" + nova.path.join(nova.workspace.path, "Bin")
-        },
-        shell: true
-    });
-    process3.onStderr(function(line) {console.error(line);});
-    process3.start();
-
-    console.log("PHPCS update started.");
-    
-    var process4 = new Process("/usr/bin/env", {
-        args: ["./Bin/phive", "install", "phpcs", "--target", "Bin", "--copy", "--trust-gpg-keys", "31C7E470E2138192"],
-        env: {
-            "PATH": "$PATH:" + nova.path.join(nova.workspace.path, "Bin")
-        },
-        shell: true
-    });
-    process4.onStdout(function(line) {
-        line = line.replace("\n", "");
-        
-        if (line.length == 0) {
-            return;
-        }
-        
-        console.log("PHPCS: " + line);
-    });
-    process4.onStderr(function(line) {console.error(line);});
-    process4.onDidExit(function () {console.log("PHPCS update finished.");});
-    process4.start();    
-
-    var process5 = new Process("/usr/bin/env", {
-        args: ["chmod", "+x", "Bin/phpcs"],
-        shell: true
-    });
-    process5.onStderr(function(line) {console.error(line);});
-    process5.start();
 }
 
 exports.deactivate = function() {

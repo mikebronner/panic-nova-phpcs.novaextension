@@ -1,9 +1,14 @@
 # Changelog
 ## [Upcoming]
+- show linting by underling the entire affected code, not just the first
+  character.
+- add more linting information (source, rule, linter).
 
 ## [Known Issues]
-- permission issues running phive when updating.
-- running too frequently may cause issues with the linter.
+
+## [0.1.6] - 2021-03-31
+### Removed
+- elaborate extension activation processes to avoid issues for now.
 
 ## [0.1.5] - 2021-03-28
 ### Fixed
