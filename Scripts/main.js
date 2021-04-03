@@ -81,6 +81,7 @@ class IssuesProvider {
     }
     
     parseLinterOutput(editor, output) {
+        let self = this;
         let lints = JSON.parse(output);
         let issues = Object
             .entries(lints.files)
@@ -88,9 +89,11 @@ class IssuesProvider {
                 return lint.messages;
             })
             .map(function (lint) {
+                let code = self.getLineOfCode(editor, lint.line);
+                let columnRange = self.getColumnRange(editor, lint, code);
                 let issue = new Issue();
     
-                issue.message = lint.message;
+                issue.message = lint.message + " | " + lint.source + " | phpcs";
                 issue.severity = IssueSeverity.Warning;
                 
                 if (lint.type === "ERROR") {
@@ -98,12 +101,95 @@ class IssuesProvider {
                 }
                 
                 issue.line = lint.line;
-                issue.column = lint.column;
+                issue.endLine = lint.line;
+                issue.column = columnRange.start;
+                issue.endColumn = columnRange.end;
     
                 return issue;
             });
             
         return issues;
+    }
+
+    getLineOfCode(editor, lineNumber)
+    {
+        let range = new Range(0, editor.document.length);
+        let documentText = editor.getTextInRange(range);
+        
+        return documentText.split("\n")[lineNumber - 1];
+    }
+    
+    getColumnRange(editor, lint, code)
+    {
+        let column = lint.column;
+        let endColumn = lint.column + 1;
+        let characterCode = code.charCodeAt(column);
+        
+        if (this.characterIsWhitespace(characterCode)) {
+            for (let index = column; index < code.length; index++) {
+                characterCode = code.charCodeAt(index);
+
+                if (! this.characterIsWhitespace(characterCode)) {
+                    break;
+                }
+                
+                endColumn = index + 2;
+            }
+        } else if (
+            this.characterIsAlphaNumeric(characterCode)
+            || this.characterIsSymbol(characterCode)
+        ) {
+            for (let index = column; index < code.length; index++) {
+                characterCode = code.charCodeAt(index);
+                
+                if (
+                    ! this.characterIsAlphaNumeric(characterCode)
+                    && characterCode !== 95
+                ) {
+                    break;
+                }
+                
+                endColumn++;
+            }
+
+            for (let index = column; index > 0; index--) {
+                characterCode = code.charCodeAt(index - 2);
+
+                if (
+                    ! this.characterIsAlphaNumeric(characterCode)
+                    && ! this.characterIsSymbol(characterCode)
+                ) {
+                    break;
+                }
+                
+                column--;
+            }
+        }
+
+        return new Range(column, endColumn);
+    }
+    
+    characterIsWhitespace(characterCode)
+    {
+        return characterCode === 32
+            || (characterCode >= 9 && characterCode <= 13)
+            || characterCode === 133
+            || characterCode === 160;
+    }
+    
+    characterIsAlphaNumeric(characterCode)
+    {
+        return (characterCode >= 48 && characterCode <= 57)
+            || (characterCode >= 65 && characterCode <= 90)
+            || (characterCode >= 97 && characterCode <= 122);
+    }
+    
+    characterIsSymbol(characterCode)
+    {
+        return (characterCode >= 33 && characterCode <= 47)
+            || (characterCode >= 58 && characterCode <= 64)
+            || (characterCode >= 91 && characterCode <= 96)
+            || (characterCode >= 123 && characterCode <= 126);
     }
 }
 

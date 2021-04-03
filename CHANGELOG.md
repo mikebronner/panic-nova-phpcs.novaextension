@@ -1,10 +1,14 @@
 # Changelog
 ## [Upcoming]
-- show linting by underling the entire affected code, not just the first
-  character.
-- add more linting information (source, rule, linter).
 
 ## [Known Issues]
+
+## [0.1.7] - 2021-04-03
+### Added
+- additional linting information in the message.
+
+### Fixed
+- linting hints to underling the affected word, not just the first character.
 
 ## [0.1.6] - 2021-03-31
 ### Removed
