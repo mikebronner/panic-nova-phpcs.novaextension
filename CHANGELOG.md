@@ -3,6 +3,10 @@
 
 ## [Known Issues]
 
+## [0.1.8] - 2021-04-03
+### Fixed
+- implementation of additional linting information.
+
 ## [0.1.7] - 2021-04-03
 ### Added
 - additional linting information in the message.
