@@ -16,7 +16,7 @@ exports.deactivate = function() {
 class IssuesProvider {
     constructor() {
     }
-    
+
     getStandard() {
         let customStandard = nova.path.join(nova.workspace.path, "phpcs.xml");
         let projectStandard = nova.workspace.config.get(
@@ -28,14 +28,14 @@ class IssuesProvider {
             'string'
         );
         let defaultStandard = "PSR1,PSR2,PSR12";
-        
+
         customStandard = nova.fs.stat(customStandard) != undefined
             ? customStandard
             : null;
 
         return (((projectStandard || customStandard) || globalStandard) || defaultStandard);
     }
-    
+
     provideIssues(editor) {
         let issues = [];
         let self = this;
@@ -51,11 +51,11 @@ class IssuesProvider {
                     ],
                     shell: true,
                 });
-                
+
                 linter.onStderr(function (error) {
                     console.error(error);
                 });
-                
+
                 linter.onStdout(function (line) {
                     console.log("PHPCS Output: " + line);
                     resolve(self.parseLinterOutput(editor, line));
@@ -79,7 +79,7 @@ class IssuesProvider {
             }
         });
     }
-    
+
     parseLinterOutput(editor, output) {
         let self = this;
         let lints = JSON.parse(output);
@@ -92,22 +92,23 @@ class IssuesProvider {
                 let code = self.getLineOfCode(editor, lint.line);
                 let columnRange = self.getColumnRange(editor, lint, code);
                 let issue = new Issue();
-    
-                issue.message = lint.message + " | " + lint.source + " | phpcs";
+
+                issue.message = lint.message;
+                issue.code = lint.source + " | phpcs";
                 issue.severity = IssueSeverity.Warning;
-                
+
                 if (lint.type === "ERROR") {
                     issue.severity = IssueSeverity.Error;
                 }
-                
+
                 issue.line = lint.line;
                 issue.endLine = lint.line;
                 issue.column = columnRange.start;
                 issue.endColumn = columnRange.end;
-    
+
                 return issue;
             });
-            
+
         return issues;
     }
 
@@ -115,16 +116,16 @@ class IssuesProvider {
     {
         let range = new Range(0, editor.document.length);
         let documentText = editor.getTextInRange(range);
-        
+
         return documentText.split("\n")[lineNumber - 1];
     }
-    
+
     getColumnRange(editor, lint, code)
     {
         let column = lint.column;
         let endColumn = lint.column + 1;
         let characterCode = code.charCodeAt(column);
-        
+
         if (this.characterIsWhitespace(characterCode)) {
             for (let index = column; index < code.length; index++) {
                 characterCode = code.charCodeAt(index);
@@ -132,7 +133,7 @@ class IssuesProvider {
                 if (! this.characterIsWhitespace(characterCode)) {
                     break;
                 }
-                
+
                 endColumn = index + 2;
             }
         } else if (
@@ -141,14 +142,14 @@ class IssuesProvider {
         ) {
             for (let index = column; index < code.length; index++) {
                 characterCode = code.charCodeAt(index);
-                
+
                 if (
                     ! this.characterIsAlphaNumeric(characterCode)
                     && characterCode !== 95
                 ) {
                     break;
                 }
-                
+
                 endColumn++;
             }
 
@@ -161,14 +162,14 @@ class IssuesProvider {
                 ) {
                     break;
                 }
-                
+
                 column--;
             }
         }
 
         return new Range(column, endColumn);
     }
-    
+
     characterIsWhitespace(characterCode)
     {
         return characterCode === 32
@@ -176,14 +177,14 @@ class IssuesProvider {
             || characterCode === 133
             || characterCode === 160;
     }
-    
+
     characterIsAlphaNumeric(characterCode)
     {
         return (characterCode >= 48 && characterCode <= 57)
             || (characterCode >= 65 && characterCode <= 90)
             || (characterCode >= 97 && characterCode <= 122);
     }
-    
+
     characterIsSymbol(characterCode)
     {
         return (characterCode >= 33 && characterCode <= 47)
