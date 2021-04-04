@@ -3,13 +3,17 @@
 
 ## [Known Issues]
 
+## [0.1.15] - 2021-04-04
+### Fixed
+- issue with multiple processes trying to start up.
+
 ## [0.1.14] - 2021-04-04
 ### Added
 - license details.
 
 ### Updated
-- linting process to use `stdin` instead of a file to greatly improve
-  performance.
+- linting process to use `stdin` instead of relying on a file, which greatly
+  improves performance.
 
 ## [0.1.10 to 0.1.13] - 2021-04-03
 ### Fixed

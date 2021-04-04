@@ -20,30 +20,6 @@ exports.deactivate = function() {
 
 class IssuesProvider {
     constructor() {
-        let self = this;
-
-        self.linter = new Process('/usr/bin/env', {
-            args: [
-                './Bin/phpcs',
-                '-',
-                '--report=json',
-                '--standard=' + self.getStandard(),
-            ],
-            shell: true,
-            stdio: ["pipe", "pipe", "pipe"],
-        });
-
-        self.linter.onDidExit(function () {
-            if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
-                console.log("PHPCS finished linting.");
-            }
-        });
-
-        self.writer = self.linter.stdin.getWriter();
-
-        self.linter.onStderr(function (error) {
-            console.error(error);
-        });
     }
 
     getStandard() {
@@ -85,6 +61,29 @@ class IssuesProvider {
 
                     self.linter.kill();
                 }
+
+                self.linter = new Process('/usr/bin/env', {
+                    args: [
+                        './Bin/phpcs',
+                        '-',
+                        '--report=json',
+                        '--standard=' + self.getStandard(),
+                    ],
+                    shell: true,
+                    stdio: ["pipe", "pipe", "pipe"],
+                });
+
+                self.linter.onDidExit(function () {
+                    if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+                        console.log("PHPCS finished linting.");
+                    }
+                });
+
+                self.writer = self.linter.stdin.getWriter();
+
+                self.linter.onStderr(function (error) {
+                    console.error(error);
+                });
 
                 self.linter.onStdout(function (line) {
                     if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
