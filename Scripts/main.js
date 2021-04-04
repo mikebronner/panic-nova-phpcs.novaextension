@@ -48,6 +48,7 @@ class IssuesProvider {
 
     provideIssues(editor) {
         this.issues = [];
+        this.output = "";
         let self = this;
         let range = new Range(0, editor.document.length);
         let documentText = editor.getTextInRange(range);
@@ -74,9 +75,27 @@ class IssuesProvider {
                 });
 
                 self.linter.onDidExit(function () {
+                    if (self.output.trim().length === 0) {
+                        return;
+                    }
+
+                    if (self.output.indexOf("ERROR") !== false) {
+                        console.error("Linter returned the following error: ", self.output);
+
+                        return;
+                    }
+
+                    if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+                        console.log("Output:", self.output);
+                    }
+
+                    resolve(self.parseLinterOutput(editor, self.output));
+
                     if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
                         console.log("PHPCS finished linting.");
                     }
+
+                    self.output = "";
                 });
 
                 self.writer = self.linter.stdin.getWriter();
@@ -86,11 +105,7 @@ class IssuesProvider {
                 });
 
                 self.linter.onStdout(function (line) {
-                    if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
-                        console.log("PHPCS Output: " + line);
-                    }
-
-                    resolve(self.parseLinterOutput(editor, line));
+                    self.output += line;
                 });
 
                 if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {

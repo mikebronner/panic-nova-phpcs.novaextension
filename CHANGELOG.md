@@ -3,6 +3,11 @@
 
 ## [Known Issues]
 
+## [0.1.16] - 2021-04-04
+### Added
+- catching of errors thrown by the linter. These would previously wreck the
+  extension, and are now output to Nova's Extension Console.
+
 ## [0.1.15] - 2021-04-04
 ### Fixed
 - issue with multiple processes trying to start up.
