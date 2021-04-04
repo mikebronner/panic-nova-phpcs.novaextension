@@ -19,9 +19,7 @@
     "repository": "https://github.com/GeneaLabs/panic-nova-phpcs",
 
     "entitlements": {
-        "filesystem": "readwrite",
-        "process": true,
-        "requests": false
+        "process": true
     },
 
     "config": [
