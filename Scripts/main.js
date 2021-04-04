@@ -1,5 +1,8 @@
 exports.activate = function() {
-    console.log("PHPCS: extension activated.");
+    if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+        console.log("PHPCS: extension activated.");
+    }
+
     var process2 = new Process("/usr/bin/env", {
         args: ["chmod", "+x", "Bin/phpcs"],
         shell: true
@@ -10,7 +13,9 @@ exports.activate = function() {
 
 exports.deactivate = function() {
     // Clean up state before the extension is deactivated
-    console.log("Extension is being deactivated.");
+    if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+        console.log("Extension is being deactivated.");
+    }
 }
 
 class IssuesProvider {
@@ -32,8 +37,13 @@ class IssuesProvider {
         customStandard = nova.fs.stat(customStandard) != undefined
             ? customStandard
             : null;
+        let selectedStandard = (((projectStandard || customStandard) || globalStandard) || defaultStandard);
 
-        return (((projectStandard || customStandard) || globalStandard) || defaultStandard);
+        if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+            console.log("Determined linting standard: ", selectedStandard);
+        }
+
+        return selectedStandard;
     }
 
     provideIssues(editor) {
@@ -42,38 +52,59 @@ class IssuesProvider {
 
         return new Promise(function (resolve) {
             try {
-                const linter = new Process('/usr/bin/env', {
+                let range = new Range(0, editor.document.length);
+                let documentText = editor.getTextInRange(range);
+                let lintFile = nova.fs.open(nova.extension.path +  "/linting.php", "w");
+                lintFile.write(editor.getTextInRange(range));
+                lintFile.close();
+
+                if (self.linter !== undefined) {
+                    if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+                        console.log("Killed previous linter instance.");
+                    }
+
+                    self.linter.kill();
+                }
+
+                self.linter = new Process('/usr/bin/env', {
                     args: [
                         './Bin/phpcs',
                         '--report=json',
                         '--standard=' + self.getStandard(),
-                        editor.document.path,
+                        nova.extension.path +  "/linting.php",
                     ],
                     shell: true,
                 });
 
-                linter.onStderr(function (error) {
+                self.linter.onStderr(function (error) {
                     console.error(error);
                 });
 
-                linter.onStdout(function (line) {
-                    console.log("PHPCS Output: " + line);
+                self.linter.onStdout(function (line) {
+                    if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+                        console.log("PHPCS Output: " + line);
+                    }
+
                     resolve(self.parseLinterOutput(editor, line));
                 });
 
-                linter.onDidExit(function () {
-                    console.log(
-                        "PHPCS finished linting "
-                        + editor.document.path
-                    );
+                self.linter.onDidExit(function () {
+                    if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+                        console.log(
+                            "PHPCS finished linting "
+                            + editor.document.path
+                        );
+                    }
                 });
 
-                console.log(
-                    "PHPCS started linting "
-                    + editor.document.path
-                );
+                if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+                    console.log(
+                        "PHPCS started linting "
+                        + editor.document.path
+                    );
+                }
 
-                linter.start();
+                self.linter.start();
             } catch (error) {
                 console.error(error);
             }
@@ -81,6 +112,9 @@ class IssuesProvider {
     }
 
     parseLinterOutput(editor, output) {
+        let range = new Range(0, editor.document.length);
+        let documentText = editor.getTextInRange(range);
+        let codeLines = documentText.split("\n");
         let self = this;
         let lints = JSON.parse(output);
         let issues = Object
@@ -89,8 +123,8 @@ class IssuesProvider {
                 return lint.messages;
             })
             .map(function (lint) {
-                let code = self.getLineOfCode(editor, lint.line);
-                let columnRange = self.getColumnRange(editor, lint, code);
+                let code = codeLines[lint.line - 1];
+                let columnRange = self.getColumnRange(lint, code);
                 let issue = new Issue();
 
                 issue.message = lint.message;
@@ -106,21 +140,32 @@ class IssuesProvider {
                 issue.column = columnRange.start;
                 issue.endColumn = columnRange.end;
 
+                if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+                    console.log("Found lint:");
+                    console.log("===========");
+                    console.log("Line Of Code: |" + code + "|");
+                    console.log("Line: " + lint.line);
+                    console.log("Start Column: " + lint.column);
+                    console.log("Calculated Start Column: " + columnRange.start);
+                    console.log("Calculated End Column: " + columnRange.end);
+                    console.log("Message: " + lint.message);
+                    console.log("Source: " + lint.source);
+                    console.log("Type: " + lint.type);
+                    console.log("===========");
+                }
+
                 return issue;
             });
 
         return issues;
     }
 
-    getLineOfCode(editor, lineNumber)
+    getLineOfCode(documentText, lineNumber)
     {
-        let range = new Range(0, editor.document.length);
-        let documentText = editor.getTextInRange(range);
-
         return documentText.split("\n")[lineNumber - 1];
     }
 
-    getColumnRange(editor, lint, code)
+    getColumnRange(lint, code)
     {
         let column = lint.column;
         let endColumn = lint.column + 1;

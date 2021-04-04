@@ -3,7 +3,7 @@
     "name": "PHP CodeSniffer",
     "organization": "GeneaLabs",
     "description": "PHPCS linter for Panic's Nova editor.",
-    "version": "0.1.8",
+    "version": "0.1.10",
     "categories": ["issues"],
 
     "main": "main.js",
@@ -15,13 +15,13 @@
 
     "bugs": "https://github.com/GeneaLabs/panic-nova-phpcs/issues",
     "funding": "https://github.com/sponsors/GeneaLabs",
-    "license": "MIT",
+    "license": "LICENSE.md",
     "repository": "https://github.com/GeneaLabs/panic-nova-phpcs",
 
     "entitlements": {
-        "filesystem": "readonly",
+        "filesystem": "readwrite",
         "process": true,
-        "requests": true
+        "requests": false
     },
 
     "config": [
@@ -32,6 +32,13 @@
             "type": "string",
             "placeholder": "phpcs.xml|PSR1,PSR2,PSR12",
             "default": ""
+        },
+        {
+            "key": "genealabs.phpcs.debugging",
+            "title": "Debugging",
+            "description": "Show debug logs in Extension Console.",
+            "type": "boolean",
+            "default": false
         }
     ],
 
@@ -43,6 +50,13 @@
             "type": "string",
             "placeholder": "phpcs.xml|PSR1,PSR2,PSR12",
             "default": ""
+        },
+        {
+            "key": "genealabs.phpcs.debugging",
+            "title": "Debugging",
+            "description": "Show debug logs in Extension Console.",
+            "type": "boolean",
+            "default": false
         }
     ]
 }
