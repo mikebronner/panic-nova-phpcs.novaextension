@@ -20,6 +20,30 @@ exports.deactivate = function() {
 
 class IssuesProvider {
     constructor() {
+        let self = this;
+
+        self.linter = new Process('/usr/bin/env', {
+            args: [
+                './Bin/phpcs',
+                '-',
+                '--report=json',
+                '--standard=' + self.getStandard(),
+            ],
+            shell: true,
+            stdio: ["pipe", "pipe", "pipe"],
+        });
+
+        self.linter.onDidExit(function () {
+            if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+                console.log("PHPCS finished linting.");
+            }
+        });
+
+        self.writer = self.linter.stdin.getWriter();
+
+        self.linter.onStderr(function (error) {
+            console.error(error);
+        });
     }
 
     getStandard() {
@@ -47,38 +71,20 @@ class IssuesProvider {
     }
 
     provideIssues(editor) {
-        let issues = [];
+        this.issues = [];
         let self = this;
+        let range = new Range(0, editor.document.length);
+        let documentText = editor.getTextInRange(range);
 
         return new Promise(function (resolve) {
             try {
-                let range = new Range(0, editor.document.length);
-                let documentText = editor.getTextInRange(range);
-                let lintFile = nova.fs.open(nova.extension.path +  "/linting.php", "w");
-                lintFile.write(editor.getTextInRange(range));
-                lintFile.close();
-
                 if (self.linter !== undefined) {
                     if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
-                        console.log("Killed previous linter instance.");
+                        console.log("Killed process, just to make sure that processes don't overlap.");
                     }
 
                     self.linter.kill();
                 }
-
-                self.linter = new Process('/usr/bin/env', {
-                    args: [
-                        './Bin/phpcs',
-                        '--report=json',
-                        '--standard=' + self.getStandard(),
-                        nova.extension.path +  "/linting.php",
-                    ],
-                    shell: true,
-                });
-
-                self.linter.onStderr(function (error) {
-                    console.error(error);
-                });
 
                 self.linter.onStdout(function (line) {
                     if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
@@ -86,15 +92,6 @@ class IssuesProvider {
                     }
 
                     resolve(self.parseLinterOutput(editor, line));
-                });
-
-                self.linter.onDidExit(function () {
-                    if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
-                        console.log(
-                            "PHPCS finished linting "
-                            + editor.document.path
-                        );
-                    }
                 });
 
                 if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
@@ -105,6 +102,16 @@ class IssuesProvider {
                 }
 
                 self.linter.start();
+
+                self.writer.ready.then(function () {
+                    let range = new Range(0, editor.document.length);
+                    let documentText = editor.getTextInRange(range);
+
+                    self.writer.write(documentText);
+                });
+                self.writer.ready.then(function () {
+                    self.writer.close();
+                });
             } catch (error) {
                 console.error(error);
             }
@@ -112,6 +119,10 @@ class IssuesProvider {
     }
 
     parseLinterOutput(editor, output) {
+        if (! (editor || false)) {
+            return;
+        }
+
         let range = new Range(0, editor.document.length);
         let documentText = editor.getTextInRange(range);
         let codeLines = documentText.split("\n");

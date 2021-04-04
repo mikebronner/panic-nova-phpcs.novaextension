@@ -3,6 +3,14 @@
 
 ## [Known Issues]
 
+## [0.1.14] - 2021-04-04
+### Added
+- license details.
+
+### Updated
+- linting process to use `stdin` instead of a file to greatly improve
+  performance.
+
 ## [0.1.10 to 0.1.13] - 2021-04-03
 ### Fixed
 - license reference.
@@ -60,4 +68,3 @@
 ## [0.1.0] - 2021-03-28
 ### Added
 - initial functionality.
-
