@@ -3,7 +3,7 @@
     "name": "PHP CodeSniffer",
     "organization": "GeneaLabs",
     "description": "PHPCS linter for Panic's Nova editor.",
-    "version": "0.1.10",
+    "version": "0.1.13",
     "categories": ["issues"],
 
     "main": "main.js",
@@ -15,7 +15,7 @@
 
     "bugs": "https://github.com/GeneaLabs/panic-nova-phpcs/issues",
     "funding": "https://github.com/sponsors/GeneaLabs",
-    "license": "LICENSE.md",
+    "license": "MIT",
     "repository": "https://github.com/GeneaLabs/panic-nova-phpcs",
 
     "entitlements": {

@@ -3,6 +3,10 @@
 
 ## [Known Issues]
 
+## [0.1.10 to 0.1.13] - 2021-04-03
+### Fixed
+- license reference.
+
 ## [0.1.10] - 2021-04-03
 ### Added
 - linter process cancelation, for the event that a new linter was started before
