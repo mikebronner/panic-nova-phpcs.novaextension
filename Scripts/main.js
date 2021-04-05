@@ -63,13 +63,28 @@ class IssuesProvider {
                     self.linter.kill();
                 }
 
+                let executablePath = ((nova.workspace.config.get('genealabs.phpcs.executablePath')
+                    || nova.config.get('genealabs.phpcs.executablePath'))
+                    || "./Bin/phpcs");
+                let workingFolder = executablePath.split("/")
+
+                if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+                    console.log("Executable Path", executablePath);
+                    console.log("Working Directory", nova.path.dirname(executablePath));
+                }
+
                 self.linter = new Process('/usr/bin/env', {
                     args: [
-                        './Bin/phpcs',
+                        executablePath,
                         '-',
                         '--report=json',
                         '--standard=' + self.getStandard(),
                     ],
+                    // args: [
+                    //     executablePath,
+                    //     '--config-show',
+                    // ],
+                    // cwd: nova.path.dirname(executablePath),
                     shell: true,
                     stdio: ["pipe", "pipe", "pipe"],
                 });
@@ -79,9 +94,9 @@ class IssuesProvider {
                         return;
                     }
 
-                    if (self.output.indexOf("ERROR") !== false) {
+                    if (! self.outputIsJson(self.output)) {
                         console.error("Linter returned the following error: ", self.output);
-
+                        
                         return;
                     }
 
@@ -238,6 +253,15 @@ class IssuesProvider {
         }
 
         return new Range(column, endColumn);
+    }
+    
+    outputIsJson(output)
+    {
+        try {
+            return (JSON.parse(output) && !!output);
+        } catch (error) {
+            return false;
+        }
     }
 
     characterIsWhitespace(characterCode)

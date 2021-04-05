@@ -1,7 +1,15 @@
 # Changelog
 ## [Upcoming]
-
+- Add the ability to specify custom PHPCI executable paths.
+- Load custom PHPCI `installed_paths` config setting to load additional custom
+  linters.
+  
 ## [Known Issues]
+
+## [0.1.17] - 2021-04-04
+### Fixed
+- handling of linter error output to not falsely trigger if the work error is
+  randomly contained in the linter output.
 
 ## [0.1.16] - 2021-04-04
 ### Added
