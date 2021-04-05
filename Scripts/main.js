@@ -77,6 +77,7 @@ class IssuesProvider {
                     args: [
                         executablePath,
                         '-',
+                        '-q',
                         '--report=json',
                         '--standard=' + self.getStandard(),
                     ],

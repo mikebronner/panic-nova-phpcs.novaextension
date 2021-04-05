@@ -6,6 +6,11 @@
   
 ## [Known Issues]
 
+## [0.1.18] - 2021-04-04
+### Fixed
+- false linting errors due to "non-quiet" linter output. Reduced the verbosity
+  to only provide JSON output.
+
 ## [0.1.17] - 2021-04-04
 ### Fixed
 - handling of linter error output to not falsely trigger if the work error is
