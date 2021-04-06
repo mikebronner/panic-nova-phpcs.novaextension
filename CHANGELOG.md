@@ -3,8 +3,13 @@
 - Add the ability to specify custom PHPCI executable paths.
 - Load custom PHPCI `installed_paths` config setting to load additional custom
   linters.
-  
+
 ## [Known Issues]
+
+## [0.1.18] - 2021-04-06
+### Fixed
+- output processing to not cause all issue matching extension to fail if PHPCS
+  encountered an error.
 
 ## [0.1.18] - 2021-04-04
 ### Fixed

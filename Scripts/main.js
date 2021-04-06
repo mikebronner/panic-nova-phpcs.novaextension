@@ -55,18 +55,9 @@ class IssuesProvider {
 
         return new Promise(function (resolve) {
             try {
-                if (self.linter !== undefined) {
-                    if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
-                        console.log("Killed process, just to make sure that processes don't overlap.");
-                    }
-
-                    self.linter.kill();
-                }
-
                 let executablePath = ((nova.workspace.config.get('genealabs.phpcs.executablePath')
                     || nova.config.get('genealabs.phpcs.executablePath'))
                     || "./Bin/phpcs");
-                let workingFolder = executablePath.split("/")
 
                 if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
                     console.log("Executable Path", executablePath);
@@ -81,24 +72,19 @@ class IssuesProvider {
                         '--report=json',
                         '--standard=' + self.getStandard(),
                     ],
-                    // args: [
-                    //     executablePath,
-                    //     '--config-show',
-                    // ],
-                    // cwd: nova.path.dirname(executablePath),
                     shell: true,
                     stdio: ["pipe", "pipe", "pipe"],
                 });
 
                 self.linter.onDidExit(function () {
                     if (self.output.trim().length === 0) {
-                        return;
+                        return [];
                     }
 
                     if (! self.outputIsJson(self.output)) {
                         console.error("Linter returned the following error: ", self.output);
-                        
-                        return;
+
+                        return [];
                     }
 
                     if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
@@ -255,7 +241,7 @@ class IssuesProvider {
 
         return new Range(column, endColumn);
     }
-    
+
     outputIsJson(output)
     {
         try {
