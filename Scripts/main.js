@@ -78,13 +78,13 @@ class IssuesProvider {
 
                 self.linter.onDidExit(function () {
                     if (self.output.trim().length === 0) {
-                        return [];
+                        return resolve([]);
                     }
 
                     if (! self.outputIsJson(self.output)) {
                         console.error("Linter returned the following error: ", self.output);
 
-                        return [];
+                        return resolve([]);
                     }
 
                     if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {

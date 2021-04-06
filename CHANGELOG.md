@@ -5,8 +5,14 @@
   linters.
 
 ## [Known Issues]
+- Keeping an eye on how the linter behaves when it errors.
 
-## [0.1.18] - 2021-04-06
+## [0.1.20] - 2021-04-06
+### Updated
+- output processing to not cause all issue matching extension to fail if PHPCS
+  encountered an error.
+
+## [0.1.19] - 2021-04-06
 ### Fixed
 - output processing to not cause all issue matching extension to fail if PHPCS
   encountered an error.
