@@ -1,6 +1,6 @@
 exports.activate = function() {
     if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
-        console.log("PHPCS: extension activated.");
+        console.log("Extension activated.");
     }
 
     var process2 = new Process("/usr/bin/env", {
@@ -20,6 +20,7 @@ exports.deactivate = function() {
 
 class IssuesProvider {
     constructor() {
+        this.showInstalledStandards();
     }
 
     getStandard() {
@@ -48,16 +49,14 @@ class IssuesProvider {
 
     provideIssues(editor) {
         this.issues = [];
-        this.output = "";
+        let output = "";
         let self = this;
         let range = new Range(0, editor.document.length);
         let documentText = editor.getTextInRange(range);
 
         return new Promise(function (resolve) {
             try {
-                let executablePath = ((nova.workspace.config.get('genealabs.phpcs.executablePath')
-                    || nova.config.get('genealabs.phpcs.executablePath'))
-                    || "./Bin/phpcs");
+                let executablePath = self.getExecutablePath();
 
                 if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
                     console.log("Executable Path", executablePath);
@@ -77,27 +76,27 @@ class IssuesProvider {
                 });
 
                 self.linter.onDidExit(function () {
-                    if (self.output.trim().length === 0) {
+                    if (output.trim().length === 0) {
                         return resolve([]);
                     }
 
-                    if (! self.outputIsJson(self.output)) {
-                        console.error("Linter returned the following error: ", self.output);
+                    if (! self.outputIsJson(output)) {
+                        console.error("Linter returned the following error: ", output);
 
                         return resolve([]);
                     }
 
                     if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
-                        console.log("Output:", self.output);
+                        console.log("Output:", output);
                     }
 
-                    resolve(self.parseLinterOutput(editor, self.output));
+                    resolve(self.parseLinterOutput(editor, output));
 
                     if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
-                        console.log("PHPCS finished linting.");
+                        console.log("Finished linting.");
                     }
 
-                    self.output = "";
+                    output = "";
                 });
 
                 self.writer = self.linter.stdin.getWriter();
@@ -107,14 +106,11 @@ class IssuesProvider {
                 });
 
                 self.linter.onStdout(function (line) {
-                    self.output += line;
+                    output += line;
                 });
 
                 if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
-                    console.log(
-                        "PHPCS started linting "
-                        + editor.document.path
-                    );
+                    console.log("Started linting " + editor.document.path);
                 }
 
                 self.linter.start();
@@ -185,6 +181,13 @@ class IssuesProvider {
             });
 
         return issues;
+    }
+
+    getExecutablePath()
+    {
+        return ((nova.workspace.config.get('genealabs.phpcs.executablePath')
+            || nova.config.get('genealabs.phpcs.executablePath'))
+            || "./Bin/phpcs");
     }
 
     getLineOfCode(documentText, lineNumber)
@@ -272,6 +275,31 @@ class IssuesProvider {
             || (characterCode >= 58 && characterCode <= 64)
             || (characterCode >= 91 && characterCode <= 96)
             || (characterCode >= 123 && characterCode <= 126);
+    }
+
+    showInstalledStandards()
+    {
+        let process = new Process("/usr/bin/env", {
+            args: [this.getExecutablePath(), "--version"],
+            shell: true,
+        });
+        process.onStdout(function (line) {
+            if (line.trim().length > 0) {
+                console.log(line.trim());
+            }
+        });
+        process.start();
+
+        process = new Process("/usr/bin/env", {
+            args: [this.getExecutablePath(), "-i"],
+            shell: true,
+        });
+        process.onStdout(function (line) {
+            if (line.trim().length > 0) {
+                console.log(line.trim());
+            }
+        });
+        process.start();
     }
 }
 

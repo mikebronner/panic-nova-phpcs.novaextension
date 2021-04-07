@@ -1,11 +1,17 @@
 # Changelog
 ## [Upcoming]
-- Add the ability to specify custom PHPCI executable paths.
-- Load custom PHPCI `installed_paths` config setting to load additional custom
-  linters.
 
 ## [Known Issues]
 - Keeping an eye on how the linter behaves when it errors.
+
+## [0.1.21] - 2021-04-07
+### Added
+- configurable executable path back in.
+- PHPCS version to debug output.
+- PHPCS installed standards to debug output.
+
+### Fixed
+- conjoining of multiple files being linted at the same time, which caused errors.
 
 ## [0.1.20] - 2021-04-06
 ### Updated
