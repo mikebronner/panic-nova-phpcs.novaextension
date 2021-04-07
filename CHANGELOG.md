@@ -4,6 +4,10 @@
 ## [Known Issues]
 - Keeping an eye on how the linter behaves when it errors.
 
+## [0.1.22] - 2021-04-07
+### Fixed
+- parsing of PHPCS error output.
+
 ## [0.1.21] - 2021-04-07
 ### Added
 - configurable executable path back in.

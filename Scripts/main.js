@@ -76,14 +76,32 @@ class IssuesProvider {
                 });
 
                 self.linter.onDidExit(function () {
-                    if (output.trim().length === 0) {
+                    output = output.trim();
+
+                    if (output.length === 0) {
                         return resolve([]);
                     }
 
                     if (! self.outputIsJson(output)) {
-                        console.error("Linter returned the following error: ", output);
+                        let issue = new Issue();
 
-                        return resolve([]);
+                        issue.message = output;
+                        issue.severity = IssueSeverity.Error;
+                        issue.line = issue.message.match(/line (\d+)/i)[1];
+                        issue.code = "phpcs";
+                        issue.endLine = issue.line + 1;
+
+                        if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+                            console.log("Found error lint:");
+                            console.log("===========");
+                            console.log("Line: " + issue.line);
+                            console.log("Message: " + lint.message);
+                            console.log("Severity: " + lint.severity);
+                            console.log("Code: " + lint.code);
+                            console.log("===========");
+                        }
+
+                        return resolve([issue]);
                     }
 
                     if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
