@@ -84,10 +84,15 @@ class IssuesProvider {
 
                     if (! self.outputIsJson(output)) {
                         let issue = new Issue();
+                        let matches = output.match(/line (\d+)/i);
+
+                        if ((matches || []).length <= 1) {
+                            return;
+                        }
 
                         issue.message = output;
                         issue.severity = IssueSeverity.Error;
-                        issue.line = issue.message.match(/line (\d+)/i)[1];
+                        issue.line = matches[1];
                         issue.code = "phpcs";
                         issue.endLine = issue.line + 1;
 

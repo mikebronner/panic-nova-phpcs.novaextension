@@ -4,6 +4,10 @@
 ## [Known Issues]
 - Keeping an eye on how the linter behaves when it errors.
 
+## [0.1.23] - 2021-04-08
+### Fixed
+- error when opening a project.
+
 ## [0.1.22] - 2021-04-07
 ### Fixed
 - parsing of PHPCS error output.
