@@ -216,7 +216,7 @@ class IssuesProvider {
             .get("genealabs.phpcs.executablePath", "string")
             .trim();
         let bundledExecutable = nova.path.join(
-            nova.workspace.path,
+            nova.extension.path,
             "Bin",
             "phpcs"
         );

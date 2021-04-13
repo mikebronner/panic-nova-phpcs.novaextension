@@ -4,6 +4,10 @@
 ## [Known Issues]
 - Keeping an eye on how the linter behaves when it errors.
 
+## [0.1.25] - 2021-04-13
+### Fixed
+- a typo when using bundled PHPCS executable.
+
 ## [0.1.24] - 2021-04-13
 ### Fixed
 - detection of project or globally configured PHPCS executable paths.
