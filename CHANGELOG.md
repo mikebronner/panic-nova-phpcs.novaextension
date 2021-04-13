@@ -4,6 +4,10 @@
 ## [Known Issues]
 - Keeping an eye on how the linter behaves when it errors.
 
+## [0.1.26] - 2021-04-13
+### Updated
+- bundled PHPCS to 3.6.0.
+
 ## [0.1.25] - 2021-04-13
 ### Fixed
 - a typo when using bundled PHPCS executable.
