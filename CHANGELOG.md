@@ -4,6 +4,10 @@
 ## [Known Issues]
 - Keeping an eye on how the linter behaves when it errors.
 
+## [0.1.24] - 2021-04-13
+### Fixed
+- detection of project or globally configured PHPCS executable paths.
+
 ## [0.1.23] - 2021-04-08
 ### Fixed
 - error when opening a project.

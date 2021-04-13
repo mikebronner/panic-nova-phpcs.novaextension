@@ -208,9 +208,48 @@ class IssuesProvider {
 
     getExecutablePath()
     {
-        return ((nova.workspace.config.get('genealabs.phpcs.executablePath')
-            || nova.config.get('genealabs.phpcs.executablePath'))
-            || "./Bin/phpcs");
+        let globalExecutable = nova.config
+            .get("genealabs.phpcs.executablePath", "string")
+            .trim();
+        let projectExecutable = nova.workspace
+            .config
+            .get("genealabs.phpcs.executablePath", "string")
+            .trim();
+        let bundledExecutable = nova.path.join(
+            nova.workspace.path,
+            "Bin",
+            "phpcs"
+        );
+
+        if (
+            globalExecutable.length > 0
+            && globalExecutable.charAt() !== "/"
+        ) {
+            globalExecutable = nova.path.join(
+                nova.workspace.path,
+                globalExecutable
+            );
+        }
+
+        if (
+            projectExecutable.length > 0
+            && projectExecutable.charAt() !== "/"
+        ) {
+            projectExecutable = nova.path.join(
+                nova.workspace.path,
+                projectExecutable
+            );
+        }
+
+        let path = projectExecutable
+            || globalExecutable
+            || bundledExecutable;
+
+        if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
+            console.log("Executable Path", path);
+        }
+
+        return path;
     }
 
     getLineOfCode(documentText, lineNumber)
