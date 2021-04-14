@@ -4,9 +4,13 @@
 ## [Known Issues]
 - Keeping an eye on how the linter behaves when it errors.
 
+## [0.1.27] - 2021-04-14
+### Fixed
+- incorrect access when there was no linter STDIN reader available.
+
 ## [0.1.26] - 2021-04-13
 ### Updated
-- bundled PHPCS to 3.6.0.
+- bundled PHPCS to from 3.5.8 to 3.6.0.
 
 ## [0.1.25] - 2021-04-13
 ### Fixed

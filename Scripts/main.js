@@ -121,6 +121,10 @@ class IssuesProvider {
 
                     output = "";
                 });
+                
+                if (((self.linter || {}).stdin || false) === false) {
+                    return;
+                )
 
                 self.writer = self.linter.stdin.getWriter();
 
