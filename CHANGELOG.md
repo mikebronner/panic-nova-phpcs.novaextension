@@ -5,6 +5,10 @@
 ## [Known Issues]
 - Keeping an eye on how the linter behaves when it errors.
 
+## [0.1.30] - 2022-04-21
+### Fixed
+- syntax error (typo).
+
 ## [0.1.29] - 2022-04-21
 ### Updated
 - bundled PHPCS to 3.6.2 from 3.6.0.
