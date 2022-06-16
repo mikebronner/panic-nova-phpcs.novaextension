@@ -3,7 +3,10 @@
 ## [Upcoming]
 
 ## [Known Issues]
-- Keeping an eye on how the linter behaves when it errors.
+
+## [0.1.31] - 2022-04-21
+### Changed
+- PHPCS from 3.6.2 to 3.7.0.
 
 ## [0.1.30] - 2022-04-21
 ### Fixed
