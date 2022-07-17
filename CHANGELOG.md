@@ -4,6 +4,13 @@
 
 ## [Known Issues]
 
+## [0.1.32] - 2022-07-17
+### Changed
+- PHPCS from 3.7.0 to 3.7.1.
+
+### Fixed
+- determining of custom lint standard if file does not exist.
+
 ## [0.1.31] - 2022-04-21
 ### Changed
 - PHPCS from 3.6.2 to 3.7.0.

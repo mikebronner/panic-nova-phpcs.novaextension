@@ -34,11 +34,16 @@ class IssuesProvider {
             'string'
         );
         let defaultStandard = "PSR1,PSR2,PSR12";
-
-        customStandard = nova.fs.stat(customStandard) != undefined
+        customStandard = nova.fs.stat(customStandard) !== undefined
             ? customStandard
             : null;
-        let selectedStandard = (((projectStandard || customStandard) || globalStandard) || defaultStandard);
+        let selectedStandard = (
+            (
+                (projectStandard || customStandard)
+                || globalStandard
+            )
+            || defaultStandard
+        );
 
         if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
             console.log("Determined linting standard: ", selectedStandard);
@@ -57,10 +62,12 @@ class IssuesProvider {
         return new Promise(function (resolve) {
             try {
                 let executablePath = self.getExecutablePath();
+                let standard = self.getStandard();
 
                 if (nova.config.get('genealabs.phpcs.debugging', 'boolean')) {
                     console.log("Executable Path", executablePath);
                     console.log("Working Directory", nova.path.dirname(executablePath));
+                    console.log("Standard", standard);
                 }
 
                 self.linter = new Process('/usr/bin/env', {
@@ -69,7 +76,7 @@ class IssuesProvider {
                         '-',
                         '-q',
                         '--report=json',
-                        '--standard=' + self.getStandard(),
+                        '--standard=' + standard,
                     ],
                     shell: true,
                     stdio: ["pipe", "pipe", "pipe"],
